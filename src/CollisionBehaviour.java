@@ -26,12 +26,12 @@ public class CollisionBehaviour implements Behavior {
 		System.out.println("created");
 	}
 	
-	@Override
+	
 	public boolean takeControl() {	
 		return buffer.isPressed();
 	}
 
-	@Override
+	
 	public void action()
 	{
 		//HELP();
@@ -115,7 +115,7 @@ public class CollisionBehaviour implements Behavior {
 		*/
 	}
 
-	@Override
+	
 	public void suppress() {
 		//suppressed = true;
 		

@@ -42,7 +42,7 @@ public class FollowWall implements Behavior {
 	
 	
 	
-	@Override
+	//@Override
 	public boolean takeControl() {
 		// TODO Auto-generated method stub
 		
@@ -89,7 +89,7 @@ public class FollowWall implements Behavior {
 		return foundWall;
 	}
 
-	@Override
+	//@Override
 	public void action() {
 		// TODO Auto-generated method stub
 		System.out.println("Following Wall");
@@ -163,9 +163,13 @@ public class FollowWall implements Behavior {
 		
 	}
 
-	@Override
 	public void suppress() {
 		supress = true;		
 	}
+
+
+
+
+
 
 }

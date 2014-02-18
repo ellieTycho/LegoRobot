@@ -11,12 +11,12 @@ public class StopRobot implements Behavior{
 		m_buffer = sensor;
 	}
 	
-	@Override
+	
 	public boolean takeControl() {
 		return m_buffer.isPressed();
 	}
 
-	@Override
+	
 	public void action() {
 		System.out.println("Exiting");
 		System.exit(0);
@@ -24,7 +24,7 @@ public class StopRobot implements Behavior{
 		
 	}
 
-	@Override
+	
 	public void suppress() {
 		// TODO Auto-generated method stub
 		

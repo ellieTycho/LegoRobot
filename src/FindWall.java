@@ -12,7 +12,7 @@ public class FindWall implements Behavior{
 		this.pilot = pilot;
 	}
 	
-	@Override
+	
 	public boolean takeControl() {
 		Motor.A.forward();
 		Motor.B.forward();
@@ -25,7 +25,7 @@ public class FindWall implements Behavior{
 		return true;
 	}
 
-	@Override
+	
 	public void action() {
 		suppressed = false;
 		System.out.println("Finding Wall");
@@ -36,7 +36,7 @@ public class FindWall implements Behavior{
 		pilot.stop();
 	}
 
-	@Override
+	
 	public void suppress() {
 		System.out.println("supressed!");
 		suppressed = true;		

@@ -21,7 +21,7 @@ public class Wheels extends Resource{
 		pilot = new DifferentialPilot(wheelDiameter, trackWidth, leftMotor, rightMotor, reverse);
 	}
 	
-	@Override
+	//@Override
 	private void invokeMethod(int methodRef){
 		
 		switch(methodRef){

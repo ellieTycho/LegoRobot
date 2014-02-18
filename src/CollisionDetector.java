@@ -30,7 +30,7 @@ public class CollisionDetector implements Runnable{
 		this.pilot = pilot;
 	}
 			
-	@Override
+	//@Override
 	public void run() {
 		
 				

@@ -27,7 +27,9 @@ public class CollisionBehaviour implements Behavior {
 	}
 	
 	
-	public boolean takeControl() {	
+	public boolean takeControl()
+	{
+	    suppressed = false;
 		return buffer.isPressed();
 	}
 
@@ -35,23 +37,30 @@ public class CollisionBehaviour implements Behavior {
 	public void action()
 	{
 		//HELP();
-		System.out.println("Bumped into suomething");
-		while ( buffer.isPressed() != true )
+		System.out.println("Bumped into something");
+		while (!suppressed && buffer.isPressed() )
 		{
-			pilot.travel(-25);
-			if ( buffer.isPressed() != true )
+			pilot.travel(-25);  //backwards
+			if ( !buffer.isPressed() && !suppressed )
 			{
 				pilot.rotate(90);
-				if ( buffer.isPressed() != true )
+				if ( !buffer.isPressed() && !suppressed )
 				{
 					pilot.travel(25);
-					if ( buffer.isPressed() != true )
+					if ( !buffer.isPressed() && !suppressed )
 					{
 						pilot.rotate(-90);
+						System.out.println("Successfully manouvered");
+						return;
 					}
 				}
 			}
+			
+			
 		}
+		
+		
+		System.out.println("Collission detection suppressed");
 		
 		
 		/*suppressed = false;		
@@ -117,7 +126,7 @@ public class CollisionBehaviour implements Behavior {
 
 	
 	public void suppress() {
-		//suppressed = true;
+		suppressed = true;
 		
 	}
 	

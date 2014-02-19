@@ -1,5 +1,6 @@
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
+import lejos.nxt.Sound;
 import lejos.nxt.TouchSensor;
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.navigation.DifferentialPilot;
@@ -7,8 +8,6 @@ import lejos.robotics.subsumption.Behavior;
 
 
 public class FollowWall implements Behavior {
-
-	private boolean supress = false;
 	
 	private boolean suppressed = false;
 	private TouchSensor buffer;
@@ -46,125 +45,113 @@ public class FollowWall implements Behavior {
 	public boolean takeControl() {
 		// TODO Auto-generated method stub
 		
-		boolean foundWall = false;
-		if ( sonar.getDistance() == 255 ) //left
+		SearchForWall();
+		System.out.println("Dir: " + m_directionOfWall);
+		if ( m_directionOfWall ==  WallDirection.NODIRECTION )
 		{
-			headControl.rotate( 90 );
-			if ( sonar.getDistance() == 255 ) //forward
-			{
-				if ( sonar.getDistance() == 255 ) //right
-				{
-					headControl.rotate( 90 );
-					if ( sonar.getDistance() == 255 ) //backward
-					{
-						headControl.rotate( 90 );
-					}
-					else
-					{
-						m_directionOfWall = WallDirection.BACKWARD;
-						foundWall = true;
-						headControl.rotate(-270);
-					}
-				}
-				else
-				{
-					m_directionOfWall = WallDirection.RIGHT;
-					foundWall = true;
-					headControl.rotate(-180);					
-				}
-			}
-			else
-			{
-				m_directionOfWall = WallDirection.FORWARD;
-				foundWall = true;
-				headControl.rotate(-90);
-			}			
+			return false;
 		}
 		else
 		{
-			m_directionOfWall = WallDirection.LEFT;
-			foundWall = true;			
-		}		
-		
-		return foundWall;
+			//System.out.println(" dir: " + m_directionOfWall);
+			//System.out.println("  dir: " + m_directionOfWall);
+ 
+			return true;
+		}
 	}
 
 	//@Override
 	public void action() {
 		// TODO Auto-generated method stub
-		System.out.println("Following Wall");
-		while ( ( m_directionOfWall != WallDirection.NODIRECTION ) && !suppressed )
+		suppressed = false;
+		WallDirection w = m_directionOfWall;   //WTFFFFFF
+		System.out.println("w :" + w);
+		System.out.println("t :" + w);
+		System.out.println("f :" + w);
+		//System.out.println("---" + m_directionOfWall );
+		//System.out.println("Following Wall " + m_directionOfWall);	
+
+		//System.out.println( WallDirection.NODIRECTION +"\n "  + ( m_directionOfWall != WallDirection.NODIRECTION ));
+		while ( ( w != WallDirection.NODIRECTION ) && !suppressed )
 		{
-			SearchForWall();
-			if ( m_directionOfWall == WallDirection.LEFT )
+			System.out.println("In the loop!!");
+			if ( (m_directionOfWall == WallDirection.LEFT) && !suppressed )
 			{
 				pilot.travel(50);
 			}
-			else if ( m_directionOfWall == WallDirection.FORWARD )
+			else if ( ( m_directionOfWall == WallDirection.FORWARD ) && !suppressed  )
 			{
 				pilot.rotate(90);
 			}
-			else if ( m_directionOfWall == WallDirection.RIGHT )
+			else if ( ( m_directionOfWall == WallDirection.RIGHT ) && !suppressed  )
 			{
 				pilot.rotate(180);
 			}
-			else if ( m_directionOfWall == WallDirection.BACKWARD )
+			else if ( ( m_directionOfWall == WallDirection.BACKWARD ) && !suppressed )
 			{
 				pilot.rotate( -90 );
 			}
-		}
-		
-		
-		
+			else
+			{
+				System.out.println("SUPRESSED");
+				break;
+			}
+			
+			SearchForWall();
+		}	
 	}
 	
 	private void SearchForWall()
 	{
 		m_directionOfWall = WallDirection.NODIRECTION;
-		boolean foundWall = false;
-		if ( sonar.getDistance() == 255 ) //left
+		if ( Scan() > 50 ) //left
 		{
 			headControl.rotate( 90 );
-			if ( sonar.getDistance() == 255 ) //forward
+			if ( Scan() > 50  ) //forward
 			{
-				if ( sonar.getDistance() == 255 ) //right
+				headControl.rotate( 90 );
+				if ( Scan() > 50 ) //right
 				{
 					headControl.rotate( 90 );
-					if ( sonar.getDistance() == 255 ) //backward
+					if ( Scan() > 50 ) //backward
 					{
-						headControl.rotate( 90 );
+						System.out.println("Can't FIND WALL");
 					}
 					else
 					{
 						m_directionOfWall = WallDirection.BACKWARD;
-						foundWall = true;
-						headControl.rotate(-270);
+						
 					}
+					headControl.rotate(-270);
 				}
 				else
 				{
 					m_directionOfWall = WallDirection.RIGHT;
-					foundWall = true;
 					headControl.rotate(-180);					
 				}
 			}
 			else
 			{
 				m_directionOfWall = WallDirection.FORWARD;
-				foundWall = true;
 				headControl.rotate(-90);
 			}			
 		}
 		else
 		{
-			m_directionOfWall = WallDirection.LEFT;
-			foundWall = true;			
+			m_directionOfWall = WallDirection.LEFT;			
 		}		
 		
 	}
 
 	public void suppress() {
-		supress = true;		
+		suppressed = true;		
+	}
+	
+	private int Scan()
+	{
+		int distance = sonar.getDistance();
+		Sound.playNote(Sound.FLUTE, distance * 10, 150);
+		return distance;
 	}
 
 

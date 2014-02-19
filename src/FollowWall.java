@@ -75,56 +75,65 @@ public class FollowWall implements Behavior {
 //			//SearchForWall();
 //		}
 		System.out.println("Dir2: " + directionOfWall);
-		while(!suppressed){
+		while(directionOfWall != WallDirection.NODIRECTION && !suppressed){
 			
-			if ( ( directionOfWall == WallDirection.FORWARD ) && !suppressed  )
+			if( directionOfWall == WallDirection.LEFT && !suppressed ){
+				pilot.forward();
+			}
+			else if ( ( directionOfWall == WallDirection.FORWARD ) && !suppressed  )
 			{
+				pilot.stop();
 				pilot.rotate(90);
 			}
 			else if ( ( directionOfWall == WallDirection.RIGHT ) && !suppressed  )
 			{
+				pilot.stop();
 				pilot.rotate(180);
 			}
 			else if ( ( directionOfWall == WallDirection.BACKWARD ) && !suppressed )
 			{
+				pilot.stop();
 				pilot.rotate( -90 );
 			}
 			else{
-				
+				pilot.stop();
+				return;
 			}	
-		}
-		
-		pilot.stop();
+		}	
 		
 		
-		if(( directionOfWall != WallDirection.LEFT  && 
-			 directionOfWall != WallDirection.NODIRECTION) 
-			 && !suppressed ){
-			
-			if ( ( directionOfWall == WallDirection.FORWARD ) && !suppressed  )
-			{
-				pilot.rotate(90);
-			}
-			else if ( ( directionOfWall == WallDirection.RIGHT ) && !suppressed  )
-			{
-				pilot.rotate(180);
-			}
-			else if ( ( directionOfWall == WallDirection.BACKWARD ) && !suppressed )
-			{
-				pilot.rotate( -90 );
-			}
-			else{
-				//nada
-			}			
-		}
-		else{
-			System.out.println("GO forward");
-			pilot.forward();
-			while(!suppressed){
-				Thread.yield();
-			}
-			
-		}
+			pilot.stop();
+		
+		
+//		
+//		if(( directionOfWall != WallDirection.LEFT  && 
+//			 directionOfWall != WallDirection.NODIRECTION) 
+//			 && !suppressed ){
+//			
+//			if ( ( directionOfWall == WallDirection.FORWARD ) && !suppressed  )
+//			{
+//				pilot.rotate(90);
+//			}
+//			else if ( ( directionOfWall == WallDirection.RIGHT ) && !suppressed  )
+//			{
+//				pilot.rotate(180);
+//			}
+//			else if ( ( directionOfWall == WallDirection.BACKWARD ) && !suppressed )
+//			{
+//				pilot.rotate( -90 );
+//			}
+//			else{
+//				//nada
+//			}			
+//		}
+//		else{
+//			System.out.println("GO forward");
+//			pilot.forward();
+//			while(!suppressed){
+//				Thread.yield();
+//			}
+//			
+//		}
 		
 
 		

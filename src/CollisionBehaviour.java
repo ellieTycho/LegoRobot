@@ -43,17 +43,17 @@ public class CollisionBehaviour implements Behavior {
 			pilot.travel(-25);  //backwards
 			if ( !buffer.isPressed() && !suppressed )
 			{
-				pilot.rotate(90);
-				if ( !buffer.isPressed() && !suppressed )
-				{
-					pilot.travel(25);
-					if ( !buffer.isPressed() && !suppressed )
-					{
-						pilot.rotate(-90);
-						System.out.println("Successfully manouvered");
-						return;
-					}
-				}
+				pilot.rotate(-90);
+//				if ( !buffer.isPressed() && !suppressed )
+//				{
+//					pilot.travel(25);
+//					if ( !buffer.isPressed() && !suppressed )
+//					{
+//						pilot.rotate(-90);
+//						System.out.println("Successfully manouvered");
+//						return;
+//					}
+//				}
 			}
 			
 			

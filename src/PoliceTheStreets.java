@@ -64,6 +64,7 @@ public class PoliceTheStreets
 //    System.out.println("Played some music");
     
     Button.waitForAnyPress();
+    pilot.setTravelSpeed(10);
     Behavior followWallBehaviour = new FollowWall( frontTouchSensor, uSensor, pilot, m_headControl);
     Behavior findWallBehaviour = new FindWall(pilot);
     Behavior stopRobot = new StopRobot( sideSensor );

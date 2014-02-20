@@ -1,6 +1,7 @@
 
 
 import lejos.nxt.Button;
+import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.NXTMotor;
 import lejos.nxt.NXTRegulatedMotor;
@@ -41,7 +42,8 @@ public class PoliceTheStreets
     
     UltrasonicSensor uSensor = new UltrasonicSensor(SensorPort.S4);
     TouchSensor frontTouchSensor = new TouchSensor(SensorPort.S3);
-    TouchSensor sideSensor = new TouchSensor( SensorPort.S1);
+    TouchSensor sideSensor = new TouchSensor( SensorPort.S2);
+    LightSensor lightSensor = new LightSensor( SensorPort.S1 );
     pilot = new DifferentialPilot( 7, 14 , m_leftWheel, m_rightWheel);
     pilot.setTravelSpeed(50);
     
@@ -69,8 +71,9 @@ public class PoliceTheStreets
     Behavior findWallBehaviour = new FindWall(pilot);
     Behavior stopRobot = new StopRobot( sideSensor );
     Behavior collisionBehaviour = new CollisionBehaviour(frontTouchSensor, uSensor, pilot, m_headControl);
+    Behavior maintainDistanceBehaviour = new MaintainDistance( lightSensor );
     
-    Behavior [] bArray = {/*findWallBehaviour,  */followWallBehaviour, collisionBehaviour, stopRobot};
+    Behavior [] bArray = {/*findWallBehaviour,  followWallBehaviour*/ maintainDistanceBehaviour, collisionBehaviour, stopRobot};
     Arbitrator arby = new Arbitrator(bArray);
     arby.start();
     

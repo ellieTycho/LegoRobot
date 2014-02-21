@@ -14,13 +14,7 @@ public class FindWall implements Behavior{
 	
 	
 	public boolean takeControl() {
-		pilot.forward();
-		while ( suppressed == false )
-		{
-			Thread.yield();
-		}
-		pilot.stop();
-		return true;
+			return true;
 	}
 
 	

@@ -73,7 +73,7 @@ public class PoliceTheStreets
     Behavior collisionBehaviour = new CollisionBehaviour(frontTouchSensor, uSensor, pilot, m_headControl);
     Behavior maintainDistanceBehaviour = new MaintainDistance( lightSensor,pilot );
     
-    Behavior [] bArray = {   followWallBehaviour, findWallBehaviour  };
+    Behavior [] bArray = { findWallBehaviour, followWallBehaviour  };
     Arbitrator arby = new Arbitrator(bArray);
     arby.start();
     

@@ -63,7 +63,8 @@ public class FollowWall implements Behavior {
 		
 		public int[] GetDistances()
 		{
-			return wallDistances;
+			int[] newDistances = {wallDistances[0],wallDistances[1],wallDistances[2],wallDistances[3]};
+			return newDistances;
 		}
 		
 		public void printDistances(){
@@ -99,10 +100,11 @@ public class FollowWall implements Behavior {
 	private WallDirection m_directionOfWall;
 	
 	private static final int WALL_DIST = 40;
+	private static final int DIST_CHANGE = 5;
 	
 	public FollowWall( TouchSensor touch,
 			UltrasonicSensor sonar,
-			DifferentialPilot pilot,
+			DifferentialPilot pilot,	
 			NXTRegulatedMotor headControl )
 	{
 		buffer = touch;
@@ -117,32 +119,45 @@ public class FollowWall implements Behavior {
 	
 	
 	//@Override
-	public boolean takeControl() {
+	public boolean takeControl()
+	{
 		// TODO Auto-generated method stub
 		//System.out.println("take control");
 		SearchForWall();
+		boolean returnValue = false;
+		
 		if ( m_wallDistances.canSeeWall( ) == true )
 		{
 			System.out.println("Can see a wall.");
 			if ( m_wallDistances.canSeeWall( WallDistances.LEFT ) &&
 					m_wallDistances.canSeeWall( WallDistances.FORWARD))
 			{
-				return true;
+				returnValue = true;
+			}
+			else if( m_wallDistances.canSeeWall( WallDistances.LEFT) == true ){
+				
+				if ( m_previousWallDistances.canSeeWall(WallDistances.LEFT) == true )
+				{
+					if(Math.abs(m_wallDistances.getDistanceToWall(WallDistances.LEFT)-
+						    m_previousWallDistances.getDistanceToWall(WallDistances.LEFT)) 
+						    > DIST_CHANGE ){
+							returnValue = true;
+						}
+				}				
 			}
 			else if ( m_wallDistances.canSeeWall( WallDistances.LEFT) == false )
 			{
-				return true;
+				returnValue = true;
 			}
 		}
 		else if(m_previousWallDistances.canSeeWall(WallDistances.LEFT))
 		{
 				System.out.println("I lost the wall!");
-				return true;
+				returnValue = true;
 		}
-		//System.out.println("return false");
-		return false;
-		
-		
+		//System.out.println( m_previousWallDistances.canSeeWall() );
+		System.out.println("return takecontrol");
+		return returnValue;	
 	}
 
 	//@Override
@@ -177,6 +192,22 @@ public class FollowWall implements Behavior {
 				pilot.rotate(100);
 			}
 		}
+		else if( m_wallDistances.canSeeWall( WallDistances.LEFT) == true ){
+			
+			if ( m_previousWallDistances.canSeeWall(WallDistances.LEFT) == true )
+			{
+				int change = m_wallDistances.getDistanceToWall(WallDistances.LEFT)-
+						m_previousWallDistances.getDistanceToWall(WallDistances.LEFT);
+			
+				if(change < -DIST_CHANGE){
+					pilot.rotate(-20);
+				}
+				else if(change > DIST_CHANGE){
+					pilot.rotate(20);
+				}
+			}
+						
+		}
 		else
 		{
 			System.out.println("Wall in no direction????????");
@@ -184,11 +215,13 @@ public class FollowWall implements Behavior {
 				if ( suppressed == false )
 				{
 					System.out.println("TURNING LEFT");
-					pilot.rotate(100);			
+					pilot.rotate(100);		
+					m_previousWallDistances = new WallDistances();
 			
 				}
 			}
 		}
+		System.out.println("return action");
 	}
 	
 	private void SearchForWall()

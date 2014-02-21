@@ -27,7 +27,7 @@ public class PoliceTheStreets
     public static void main (String[] args) 
   {
     System.out.println("My name is \n Humphrey");
-    Button.waitForAnyPress();
+
     /*m_rightWheel.forward();
     m_leftWheel.forward();
     Button.waitForAnyPress();
@@ -71,9 +71,9 @@ public class PoliceTheStreets
     Behavior findWallBehaviour = new FindWall(pilot);
     Behavior stopRobot = new StopRobot( sideSensor );
     Behavior collisionBehaviour = new CollisionBehaviour(frontTouchSensor, uSensor, pilot, m_headControl);
-    Behavior maintainDistanceBehaviour = new MaintainDistance( lightSensor );
+    Behavior maintainDistanceBehaviour = new MaintainDistance( lightSensor,pilot );
     
-    Behavior [] bArray = {/*findWallBehaviour,  followWallBehaviour*/ maintainDistanceBehaviour, collisionBehaviour, stopRobot};
+    Behavior [] bArray = {   followWallBehaviour, findWallBehaviour  };
     Arbitrator arby = new Arbitrator(bArray);
     arby.start();
     

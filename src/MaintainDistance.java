@@ -41,10 +41,11 @@ public class MaintainDistance implements Behavior {
 			
 			if(isInRange(difference)){
 				Thread.yield();
-			}				
+			}	
+			/*
 			else if(isBelowRange(difference)){
-				moveCloser();
-			}
+				move();
+			}*/
 			else{ //lost wall
 				
 			}
@@ -56,7 +57,7 @@ public class MaintainDistance implements Behavior {
 	}
 	
 	private void readjustToDistace(int distance){
-		int currentDist = getLightDistance();
+		int currentDist = LightDifference();
 		if(currentDist>distance){
 			//move left then straigten
 		}

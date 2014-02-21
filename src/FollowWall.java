@@ -9,11 +9,58 @@ import lejos.robotics.subsumption.Behavior;
 
 public class FollowWall implements Behavior {
 	
+	private class WallDistances
+	{
+		final static int LEFT = 0;
+		final static int FORWARD = 1;
+		final static int RIGHT = 2;
+		final static int BACKWARD = 3;
+		
+		int[] wallDistances = {0,0,0,0};
+		
+		public int getDistanceToWall( int direction )
+		{
+			return wallDistances[direction];
+		}
+		
+		public boolean canSeeWall()
+		{
+			boolean canSeeWall = false;
+			for ( int distance:wallDistances )
+			{
+				if ( distance != 0 )
+				{
+					canSeeWall = true;
+				}				
+			}
+			return canSeeWall;
+		}
+		
+		public boolean canSeeWall( int direction )
+		{
+			if ( wallDistances[direction] > 0 )
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		public void SetDistance( int direction, int  distance)
+		{
+			wallDistances[direction] = distance;
+		}
+	}
+	
 	private boolean suppressed = false;
 	private TouchSensor buffer;
 	private UltrasonicSensor sonar;	
 	private DifferentialPilot pilot;
 	private NXTRegulatedMotor headControl;
+	
+	private WallDistances m_wallDistances = new WallDistances();
 	
 	private enum WallDirection
 	{
@@ -26,7 +73,7 @@ public class FollowWall implements Behavior {
 	
 	private WallDirection m_directionOfWall;
 	
-	private static final int WALL_DIST = 25;
+	private static final int WALL_DIST = 1;
 	
 	public FollowWall( TouchSensor touch,
 			UltrasonicSensor sonar,
@@ -47,9 +94,7 @@ public class FollowWall implements Behavior {
 	public boolean takeControl() {
 		// TODO Auto-generated method stub
 		
-		SearchForWall();
-		
-		System.out.println("Dir: " + m_directionOfWall);
+		//System.out.println("Dir: " + m_directionOfWall);
 //		if ( m_directionOfWall ==  WallDirection.NODIRECTION )
 //		{
 //			return false;
@@ -61,50 +106,83 @@ public class FollowWall implements Behavior {
 // 
 //			return true;
 //		}
-		return true;
+		SearchForWall();
+		
+		if ( m_wallDistances.canSeeWall( ) == true )
+		{
+			if ( m_wallDistances.canSeeWall( WallDistances.LEFT ) &&
+					m_wallDistances.canSeeWall( WallDistances.FORWARD))
+			{
+				return true;
+			}
+			else if ( m_wallDistances.canSeeWall( WallDistances.LEFT) == false )
+			{
+				return true;
+			}
+		}
+		
+		return false;
+		
+		
 	}
 
 	//@Override
 	public void action() {
 		// TODO Auto-generated method stub
 		suppressed = false;
+		
+		if ( m_wallDistances.canSeeWall(WallDistances.FORWARD) )
+		{
+			if ( suppressed != false )
+			{
+				pilot.rotate(90);
+			}			
+		}
+		else if ( m_wallDistances.canSeeWall(WallDistances.RIGHT) )
+		{
+			if ( suppressed != false )
+			{
+				pilot.rotate(180);
+			}
+		}
+		else if ( m_wallDistances.canSeeWall(WallDistances.BACKWARD) )
+		{
+			if ( suppressed != false )
+			{
+				pilot.rotate(-90);
+			}
+		}
+		
 		//massive hack
+		
+		/*
 		WallDirection directionOfWall = m_directionOfWall;  	
 		
 //		if(( directionOfWall == WallDirection.NODIRECTION ) && !suppressed ){
 //			//SearchForWall();
-//		}
-		System.out.println("Dir2: " + directionOfWall);
-		while(directionOfWall != WallDirection.NODIRECTION && !suppressed){
-			
+//		}System.out.println("Dir2: " + directionOfWall);
+		
+		while(directionOfWall != WallDirection.NODIRECTION && !suppressed)
+		{			
 			if( directionOfWall == WallDirection.LEFT && !suppressed ){
-				pilot.forward();
+				
 			}
 			else if ( ( directionOfWall == WallDirection.FORWARD ) && !suppressed  )
-			{
-				pilot.stop();
+			{				
 				pilot.rotate(90);
 			}
 			else if ( ( directionOfWall == WallDirection.RIGHT ) && !suppressed  )
-			{
-				pilot.stop();
+			{				
 				pilot.rotate(180);
 			}
 			else if ( ( directionOfWall == WallDirection.BACKWARD ) && !suppressed )
 			{
-				pilot.stop();
 				pilot.rotate( -90 );
 			}
-			else{
-				pilot.stop();
-				return;
-			}	
 		}	
 		
 		
-			pilot.stop();
-		
-		
+		*/
 //		
 //		if(( directionOfWall != WallDirection.LEFT  && 
 //			 directionOfWall != WallDirection.NODIRECTION) 
@@ -170,6 +248,19 @@ public class FollowWall implements Behavior {
 	
 	private void SearchForWall()
 	{
+		
+		m_wallDistances.SetDistance( WallDistances.LEFT, Scan() );
+		headControl.rotate( -90 );
+		m_wallDistances.SetDistance( WallDistances.FORWARD, Scan() );
+		headControl.rotate( -90 );
+		m_wallDistances.SetDistance( WallDistances.RIGHT, Scan() );
+		headControl.rotate( -90 );
+		m_wallDistances.SetDistance( WallDistances.BACKWARD, Scan() );
+		headControl.rotate( 270 );
+		
+		
+		
+		/*
 		m_directionOfWall = WallDirection.NODIRECTION;
 		if ( Scan() > WALL_DIST ) //left
 		{
@@ -207,7 +298,7 @@ public class FollowWall implements Behavior {
 		{
 			m_directionOfWall = WallDirection.LEFT;			
 		}		
-		
+		*/
 	}
 
 	public void suppress() {
@@ -218,6 +309,10 @@ public class FollowWall implements Behavior {
 	{
 		int distance = sonar.getDistance();
 		System.out.println(distance);
+		if ( distance > WALL_DIST )
+		{
+			distance = 0;
+		}
 		Sound.playNote(Sound.FLUTE, distance * 10, 150);
 		return distance;
 	}

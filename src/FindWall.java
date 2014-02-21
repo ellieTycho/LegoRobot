@@ -14,14 +14,12 @@ public class FindWall implements Behavior{
 	
 	
 	public boolean takeControl() {
-		Motor.A.forward();
-		Motor.B.forward();
-		while ( suppressed = false )
+		pilot.forward();
+		while ( suppressed == false )
 		{
 			Thread.yield();
 		}
-		Motor.A.stop();
-		Motor.B.stop();
+		pilot.stop();
 		return true;
 	}
 

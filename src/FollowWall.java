@@ -99,8 +99,8 @@ public class FollowWall implements Behavior {
 	
 	private WallDirection m_directionOfWall;
 	
-	private static final int WALL_DIST = 40;
-	private static final int DIST_CHANGE = 5;
+	private static final int VIEW_DIST = 40;
+	private static final int DIST_CHANGE = 3;
 	
 	public FollowWall( TouchSensor touch,
 			UltrasonicSensor sonar,
@@ -198,7 +198,8 @@ public class FollowWall implements Behavior {
 			{
 				int change = m_wallDistances.getDistanceToWall(WallDistances.LEFT)-
 						m_previousWallDistances.getDistanceToWall(WallDistances.LEFT);
-			
+				
+				System.out.println("change: " + change);
 				if(change < -DIST_CHANGE){
 					pilot.rotate(-20);
 				}
@@ -242,20 +243,20 @@ public class FollowWall implements Behavior {
 		
 		headControl.setSpeed(10000);
 		m_wallDistances.SetDistance( WallDistances.LEFT, Scan() );
-		headControl.rotate( -90 );
+		headControl.rotate( 60 );
 		int distance =  Scan();
 		m_wallDistances.SetDistance( WallDistances.FORWARD, distance);
 		if ( distance != 0 )
 		{
-			headControl.rotate( 90 );
+			headControl.rotate( -60 );
 		}
 		else
 		{
-			headControl.rotate( -90 );
+			headControl.rotate( 60 );
 			m_wallDistances.SetDistance( WallDistances.RIGHT, Scan() );
-			headControl.rotate( -90 );
+			headControl.rotate( 60 );
 			m_wallDistances.SetDistance( WallDistances.BACKWARD, Scan() );
-			headControl.rotate( 270 );
+			headControl.rotate( -180 );
 		}
 	}
 
@@ -267,7 +268,7 @@ public class FollowWall implements Behavior {
 	{
 		int distance = sonar.getDistance();
 		//System.out.println(distance);
-		if ( distance > WALL_DIST )
+		if ( distance > VIEW_DIST )
 		{
 			distance = 0;
 		}

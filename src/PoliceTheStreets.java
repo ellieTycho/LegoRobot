@@ -67,13 +67,18 @@ public class PoliceTheStreets
     
     Button.waitForAnyPress();
     pilot.setTravelSpeed(10);
+    
+    Flag flag = new Flag();
     Behavior followWallBehaviour = new FollowWall( frontTouchSensor, uSensor, pilot, m_headControl);
-    Behavior findWallBehaviour = new FindWall(pilot);
+    Behavior findWallBehaviour = new FindWall(pilot, flag, m_headControl, uSensor);
     Behavior stopRobot = new StopRobot( sideSensor );
     Behavior collisionBehaviour = new CollisionBehaviour(frontTouchSensor, uSensor, pilot, m_headControl);
     Behavior maintainDistanceBehaviour = new MaintainDistance( lightSensor,pilot );
+    Behavior WallFollow2 = new WallFollow2(frontTouchSensor, uSensor, pilot, m_headControl,lightSensor, flag);
+    Behavior WallFollow3 = new WallFollow3(frontTouchSensor, uSensor, pilot, m_headControl,lightSensor, flag);
     
-    Behavior [] bArray = { findWallBehaviour, followWallBehaviour  };
+    //Behavior [] bArray = { findWallBehaviour, WallFollow2, collisionBehaviour };
+    Behavior [] bArray = { WallFollow3, collisionBehaviour };
     Arbitrator arby = new Arbitrator(bArray);
     arby.start();
     
